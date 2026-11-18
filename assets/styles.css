@@ -600,6 +600,7 @@ blockquote {
 /* ==========================================================================
    Home Hero & Page Headers
    ========================================================================== */
+
 .hero {
   position: relative;
   padding-block: 48px 64px;
@@ -613,8 +614,6 @@ blockquote {
 
 .hero-grid {
   display: grid;
-  /* Let each hero row grow to its full content height.
-     The text column can be taller than the desktop media minimum. */
   grid-auto-rows: max-content;
   gap: 32px;
   align-items: stretch;
@@ -622,7 +621,7 @@ blockquote {
 
 @media (min-width: 1024px) {
   .hero-grid {
-    grid-template-columns: 1.02fr 1.18fr;
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, 1.18fr);
     gap: 48px;
   }
 }
@@ -632,21 +631,25 @@ blockquote {
   flex-direction: column;
   justify-content: center;
   gap: 20px;
+  min-width: 0;
 }
 
 .hero-media {
   position: relative;
   min-height: 260px;
+  min-width: 0;
 }
 
 @media (min-width: 1024px) {
   .hero-media {
     min-height: 460px;
   }
+}
 
-  .hero-media .media-frame {
-    height: 100%;
-  }
+.hero-media .media-frame {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
 }
 
 .hero-specs {
@@ -682,25 +685,6 @@ blockquote {
   color: var(--text-primary);
 }
 
-/* Inner Page Banner */
-.page-hero {
-  padding-block: 52px 44px;
-  border-bottom: 1px solid var(--border-subtle);
-  background-color: var(--bg-elevated);
-}
-
-@media (min-width: 768px) {
-  .page-hero {
-    padding-block: 72px 56px;
-  }
-}
-
-.page-hero-inner {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  max-width: 760px;
-}
 
 /* ==========================================================================
    Section Headers & Grids
