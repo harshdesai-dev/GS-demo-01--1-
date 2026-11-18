@@ -1,59 +1,57 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
-import fs from 'fs';
-import path from 'path';
-import {defineConfig} from 'vite';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { defineConfig } from 'vite';
 
-export default defineConfig(() => {
-  return {
-    plugins: [
-      react(),
-      tailwindcss(),
-      // Copies src/assets and assets into dist/ so root-relative URLs
-      // still resolve in production builds. Do not remove.
-      {
-        name: 'copy-unbundled-src-assets',
-        apply: 'build',
-        closeBundle(error?: Error): void {
-          if (error) {
-            return;
+const projectRoot = path.dirname(fileURLToPath(import.meta.url));
+
+export default defineConfig({
+  plugins: [
+    react(),
+    tailwindcss(),
+    // Preserve root-relative image, CSS, and script paths in the production build.
+    {
+      name: 'copy-unbundled-assets',
+      apply: 'build',
+      closeBundle() {
+        const distDir = path.join(projectRoot, 'dist');
+        const assetDirectories = [
+          { source: path.join(projectRoot, 'src/assets'), destination: path.join(distDir, 'src/assets') },
+          { source: path.join(projectRoot, 'assets'), destination: path.join(distDir, 'assets') },
+        ];
+
+        for (const directory of assetDirectories) {
+          if (fs.existsSync(directory.source)) {
+            fs.cpSync(directory.source, directory.destination, {
+              recursive: true,
+              force: true,
+            });
           }
-          const distDir = path.resolve(__dirname, 'dist');
-          const srcAssets = path.resolve(__dirname, 'src/assets');
-          const distSrcAssets = path.resolve(distDir, 'src/assets');
-          if (fs.existsSync(distDir) && fs.existsSync(srcAssets)) {
-            fs.cpSync(srcAssets, distSrcAssets, {recursive: true, force: true});
-          }
-          const rootAssets = path.resolve(__dirname, 'assets');
-          const distRootAssets = path.resolve(distDir, 'assets');
-          if (fs.existsSync(distDir) && fs.existsSync(rootAssets)) {
-            fs.cpSync(rootAssets, distRootAssets, {recursive: true, force: true});
-          }
-        },
-      },
-    ],
-    build: {
-      rollupOptions: {
-        input: {
-          main: path.resolve(__dirname, 'index.html'),
-          about: path.resolve(__dirname, 'about.html'),
-          facilities: path.resolve(__dirname, 'facilities.html'),
-          gallery: path.resolve(__dirname, 'gallery.html'),
-          contact: path.resolve(__dirname, 'contact.html'),
-        },
+        }
       },
     },
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, '.'),
+  ],
+  build: {
+    rollupOptions: {
+      input: {
+        main: path.join(projectRoot, 'index.html'),
+        about: path.join(projectRoot, 'about.html'),
+        facilities: path.join(projectRoot, 'facilities.html'),
+        gallery: path.join(projectRoot, 'gallery.html'),
+        contact: path.join(projectRoot, 'contact.html'),
       },
     },
-    server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modify—file watching is disabled to prevent flickering during agent edits.
-      hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
-      watch: process.env.DISABLE_HMR === 'true' ? null : {},
+  },
+  resolve: {
+    alias: {
+      '@': projectRoot,
     },
-  };
+  },
+  server: {
+    // HMR can be disabled in constrained editing environments when requested.
+    hmr: process.env.DISABLE_HMR !== 'true',
+    watch: process.env.DISABLE_HMR === 'true' ? null : {},
+  },
 });
