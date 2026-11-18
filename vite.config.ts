@@ -1,5 +1,3 @@
-import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,8 +7,6 @@ const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   plugins: [
-    react(),
-    tailwindcss(),
     // Preserve root-relative image, CSS, and script paths in the production build.
     {
       name: 'copy-unbundled-assets',
@@ -42,11 +38,6 @@ export default defineConfig({
         gallery: path.join(projectRoot, 'gallery.html'),
         contact: path.join(projectRoot, 'contact.html'),
       },
-    },
-  },
-  resolve: {
-    alias: {
-      '@': projectRoot,
     },
   },
   server: {
