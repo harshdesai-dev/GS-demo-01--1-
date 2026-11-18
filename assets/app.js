@@ -211,17 +211,61 @@
     });
   }
 
-  /* Global Escape & Lightbox Keyboard Navigation */
+  /* Keep keyboard focus inside the active drawer or lightbox. */
+  function trapModalFocus(container, event) {
+    const focusableElements = Array.from(
+      container.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter(function (element) {
+      return element.getAttribute('aria-hidden') !== 'true' && element.offsetParent !== null;
+    });
+
+    if (focusableElements.length === 0) {
+      event.preventDefault();
+      return;
+    }
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    if (event.shiftKey && (document.activeElement === firstElement || !container.contains(document.activeElement))) {
+      event.preventDefault();
+      lastElement.focus();
+    } else if (!event.shiftKey && (document.activeElement === lastElement || !container.contains(document.activeElement))) {
+      event.preventDefault();
+      firstElement.focus();
+    }
+  }
+
+  /* Global Escape, modal focus management & lightbox keyboard navigation. */
   document.addEventListener('keydown', function (event) {
+    const mobileMenuIsOpen = mobileDrawer && mobileDrawer.classList.contains('is-open');
+    const lightboxIsOpen = lightbox && lightbox.classList.contains('is-open');
+
     if (event.key === 'Escape') {
-      closeMobileMenu(true);
-      closeLightbox();
-    } else if (lightbox && lightbox.classList.contains('is-open')) {
-      if (event.key === 'ArrowLeft') {
-        showLightboxAt(activeLightboxIndex - 1);
-      } else if (event.key === 'ArrowRight') {
-        showLightboxAt(activeLightboxIndex + 1);
+      if (lightboxIsOpen) {
+        closeLightbox();
+      } else if (mobileMenuIsOpen) {
+        closeMobileMenu(true);
       }
+      return;
+    }
+
+    if (event.key === 'Tab' && mobileMenuIsOpen) {
+      trapModalFocus(mobileDrawer, event);
+      return;
+    }
+
+    if (event.key === 'Tab' && lightboxIsOpen) {
+      trapModalFocus(lightbox, event);
+      return;
+    }
+
+    if (lightboxIsOpen && event.key === 'ArrowLeft') {
+      showLightboxAt(activeLightboxIndex - 1);
+    } else if (lightboxIsOpen && event.key === 'ArrowRight') {
+      showLightboxAt(activeLightboxIndex + 1);
     }
   });
 

@@ -13,7 +13,7 @@ A static, five-page gym website demo built for **GrowthSathi Package 01 — Esse
 ## Assets & Scripts
 
 - `assets/styles.css` — Responsive CSS3 design system (`390px`, `768px`, `1366px+`) with dark charcoal surfaces, restrained electric lime accents, tabular numerals, and `prefers-reduced-motion` support
-- `assets/app.js` — Vanilla JavaScript for mobile drawer navigation (Escape/link/backdrop close), gallery filtering, lightbox keyboard navigation, clipboard phone copy, and image fallback handling
+- `assets/app.js` — Vanilla JavaScript for mobile drawer navigation (Escape/link/backdrop close and keyboard focus containment), gallery filtering, accessible lightbox focus containment and keyboard navigation, clipboard phone copy, and image fallback handling
 - `src/assets/images/` — Local optimized photography assets
 
 ## Strict Package 01 Boundaries
@@ -31,8 +31,12 @@ All contact enquiries route directly through `tel:` and prefilled `https://wa.me
 2. Replace the illustrative studio address, email (`hello@forgefitness-demo.example`), and opening hours on `contact.html`.
 3. Verify Open Graph metadata and page descriptions for your target city and brand name.
 
-## Local Preview & Vercel Deployment
+## Stack & Local Preview
 
-- **Local preview**: Run `npm run dev` (serves via Vite on port `3000`) or open the root directory with any static server.
+- **Stack**: Semantic HTML, CSS, vanilla JavaScript, and Vite. No React app, backend server, database, or API is required.
+- **Prerequisite**: Node.js `20.19+`.
+- **Install**: Run `npm install` once after cloning or pulling dependency changes.
+- **Development**: Run `npm run dev` (Vite serves the site on port `3000`).
 - **Production build**: Run `npm run build` to output all five HTML pages and assets to `dist/`.
-- **Vercel**: Deploy directly as a static site or via Vite build (`npm run build`, output directory `dist`).
+- **Preview production build**: Run `npm run preview`.
+- **Vercel**: Deploy as a static Vite site with build command `npm run build` and output directory `dist`.
