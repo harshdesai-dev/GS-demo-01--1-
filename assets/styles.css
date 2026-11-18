@@ -613,6 +613,9 @@ blockquote {
 
 .hero-grid {
   display: grid;
+  /* Let each hero row grow to its full content height.
+     The text column can be taller than the desktop media minimum. */
+  grid-auto-rows: max-content;
   gap: 32px;
   align-items: stretch;
 }
