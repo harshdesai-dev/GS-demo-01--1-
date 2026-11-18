@@ -1,6 +1,5 @@
 {
   "name": "Forge Fitness Club",
   "description": "GrowthSathi Package 01 — Essential Presence static gym website demo for Forge Fitness Club.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "requestFramePermissions": []
 }
